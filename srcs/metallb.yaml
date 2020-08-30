@@ -1,0 +1,24 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    metallb.yaml                                       :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: wquinoa <wquinoa@student.42.fr>            +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2020/08/25 14:56:40 by wquinoa           #+#    #+#              #
+#    Updated: 2020/08/25 14:56:41 by wquinoa          ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: metallb-system
+  name: config
+data:
+  config: |
+    address-pools:
+    - name: default
+      protocol: layer2
+      addresses:
+      - 192.168.99.100-192.168.99.200 
