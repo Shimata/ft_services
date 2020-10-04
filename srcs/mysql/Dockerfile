@@ -6,7 +6,7 @@
 #    By: wquinoa <wquinoa@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/25 22:40:42 by wquinoa           #+#    #+#              #
-#    Updated: 2020/08/25 23:33:27 by wquinoa          ###   ########.fr        #
+#    Updated: 2020/09/23 18:02:58 by wquinoa          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,14 +14,16 @@ FROM alpine
 
 RUN apk update
 RUN apk upgrade
-RUN apk add mariadb mariadb-client
+RUN apk add mysql mysql-client
 RUN apk add openrc
-VOLUME [ "/sys/fs/cgroup" ]
+VOLUME [ "/var/lib/mysql" ]
 
-COPY ./src/wordpress_conf.sql .
+COPY ./src/mysql_conf.sql /etc/
+COPY ./src/my.cnf /etc/
+COPY ./src/wordpress.sql /etc/
 COPY ./src/install.sh .
 
 RUN chmod u+x install.sh
-RUN echo "[mysqld]\nuser = root\ndatadir = /var/lib/mysql\nport = 3306\nbind-address = 0.0.0.0\nskip-networking = false" > /etc/mysql/my.cnf
 
-ENTRYPOINT ["install.sh"]
+EXPOSE 3306
+ENTRYPOINT [ "sh", "install.sh" ]

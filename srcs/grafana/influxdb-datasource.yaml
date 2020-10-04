@@ -3,7 +3,7 @@ datasources:
 - name: influxdb
   type: influxdb
   orgId: 1
-  url: http://influxdb-service:8086
+  url: http://cip-influxdb:8086
   database: telegraf
   version: 1
   editable: false

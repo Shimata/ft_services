@@ -1,7 +1,9 @@
 #!bin/sh
 
-rc default
-/etc/init.d/mariadb setup #init mysql
-rc-service mariadb start && mysql -u root mysql < /var/mysql_conf.sql && mysql wordpress -u root --password=  < /var/wordpress.sql
-rc-sevice mariadb stop
-/usr/bin/mysqld_safe
+rc default ;
+/etc/init.d/mariadb setup
+rc-service mariadb start 
+mysql -u root mysql < /etc/mysql_conf.sql ; #check
+mysql -u root wordpress  < /etc/wordpress.sql ;
+rc-service mariadb stop ;
+/usr/bin/mysqld_safe ;

@@ -3,36 +3,30 @@
 #                                                         :::      ::::::::    #
 #    Dockerfile                                         :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: wquinoa <wquinoa@student.21-school.ru>     +#+  +:+       +#+         #
+#    By: wquinoa <wquinoa@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/09/10 15:49:50 by kwillum           #+#    #+#              #
-#    Updated: 2020/09/14 13:19:59 by wquinoa          ###   ########.fr        #
+#    Updated: 2020/09/27 18:24:28 by wquinoa          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-FROM	alpine:latest
+FROM	alpine
 
-ARG 	IP
-RUN		apk update
-RUN		apk add openrc openssl vsftpd
-RUN 	apk add --no-cache --upgrade bash && rm -rf /var/cache/apk/*
-RUN 	mkdir -p /var/ftp
+RUN	apk update
+RUN	apk add openrc openssl vsftpd
+RUN apk add --no-cache --upgrade bash && rm -rf /var/cache/apk/*
+RUN mkdir -p /var/ftp
 
-COPY	./my_vsftpd.conf /etc/vsftpd/vsftpd.conf
-COPY	start.sh /tmp/
-COPY	./create_user.sh /tmp/
-RUN		chmod +x /tmp/start.sh
-RUN		chmod +x /tmp/create_user.sh
-RUN		mkdir -p  /ftp_anon ;
-RUN		mkdir -p  /ftp_peer ;
-RUN		echo "super file!" > /ftp_peer/text.txt
-RUN		echo -e "SUPER_POWERfull_PASS228\nSUPER_POWERfull_PASS228" | adduser ftp_peer -s /bin/false -h /ftp_peer ;
-RUN		echo "/bin/false" >> /etc/shells
-RUN		chown ftp_peer:ftp_peer /ftp_peer ;
-RUN		echo "Done!"
-RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj '/C=AB/ST=CD/L=EF/O=21/CN=wquinoa' \
-	-keyout /etc/ssl/certs/vsftpd.key -out /etc/ssl/certs/vsftpd.crt
+COPY ./vsftpd.conf /etc/vsftpd/vsftpd.conf
+COPY start.sh /start.sh
+RUN chmod u+x /start.sh
+RUN	mkdir -p /ftp_anon /wquinoa
+RUN	printf "move files from the window on the left here\n" > /wquinoa/Readme.txt
+RUN	printf "wquinoa\nwquinoa\n" | adduser wquinoa -s /bin/false -h /wquinoa
+RUN	printf "/bin/false\n" >> /etc/shells
+RUN	chown wquinoa:wquinoa /wquinoa
+RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj '/C=AB/ST=CD/L=EF/O=21/CN=wquinoa' -keyout /etc/vsftpd/vsftpd.key -out /etc/vsftpd/vsftpd.crt
 
-EXPOSE	20 21 22 21000-22000
+EXPOSE	20 21 21000-22000
 
-ENTRYPOINT ["/tmp/start.sh"]
+ENTRYPOINT [ "sh", "start.sh" ]

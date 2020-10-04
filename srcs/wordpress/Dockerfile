@@ -5,19 +5,28 @@
 #                                                     +:+ +:+         +:+      #
 #    By: wquinoa <wquinoa@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2020/09/13 17:53:39 by kwillum           #+#    #+#              #
-#    Updated: 2020/09/23 19:21:24 by wquinoa          ###   ########.fr        #
+#    Created: 2020/09/02 06:02:58 by wquinoa           #+#    #+#              #
+#    Updated: 2020/09/22 23:49:28 by wquinoa          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 FROM alpine
 
 RUN apk update
-RUN apk add grafana --repository=http://dl-3.alpinelinux.org/alpine/edge/testing/
+RUN apk upgrade
+RUN apk add wget
+RUN apk add openssl
+RUN apk add php7 php7-fpm php7-mysqli php7-zlib php7-curl php7-mbstring php7-json php7-session
+RUN apk add openssh
 
-COPY influxdb-datasource.yaml /usr/share/grafana/conf/provisioning/datasources/influxdb.yaml
-COPY dashboards.yaml /usr/share/grafana/conf/provisioning/dashboards/dashboards.yaml
-COPY ./json/* /var/lib/grafana/dashboards/
+RUN wget https://wordpress.org/latest.zip
+RUN unzip latest.zip
+RUN mv wordpress /www/
+RUN rm latest.zip
 
-EXPOSE	3000
-ENTRYPOINT [ "grafana-server", "--homepath=/usr/share/grafana" ]
+COPY wp-config.php /www/
+COPY install.sh start.sh
+RUN chmod u+x start.sh
+
+EXPOSE 5050
+ENTRYPOINT [ "sh", "start.sh" ]
